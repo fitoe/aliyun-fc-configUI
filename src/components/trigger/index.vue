@@ -2,7 +2,7 @@
 import TriggerHttp from '@/components/trigger/http.vue'
 import TriggerTimer from '@/components/trigger/timer.vue'
 
-const model = defineModel<(TriggerHttpItem | TriggerTimerItem)[]>({
+const model = defineModel<TriggerItem[]>({
   default: [],
 })
 function addTrigger(command: string) {

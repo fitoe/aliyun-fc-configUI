@@ -9,6 +9,7 @@ const rules = {
   cpu: [{ required: true, message: '请选择CPU', trigger: 'blur' }],
   memory: [{ required: true, message: '请选择内存', trigger: 'blur' }],
   disk: [{ required: true, message: '请选择临时硬盘', trigger: 'blur' }],
+  role: [{ required: true, message: '请填写角色', trigger: 'blur' }],
 }
 </script>
 
@@ -22,6 +23,9 @@ const rules = {
       </el-form-item>
       <el-form-item label="函数名称" prop="functionName">
         <el-input v-model="model.functionName" placeholder="请输入函数名称" />
+      </el-form-item>
+      <el-form-item label="权限" prop="role">
+        <el-input v-model="model.role" placeholder="请输入角色名称" />
       </el-form-item>
       <el-form-item label="所在区域" prop="region">
         <el-select v-model="model.region" placeholder="请选择">

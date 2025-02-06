@@ -7,6 +7,7 @@ declare global {
     memory: number
     disk: number
     description: string
+    role: string
   }
 }
 

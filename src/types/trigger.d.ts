@@ -10,12 +10,6 @@ declare global {
     }
   }
 
-  interface TriggerHttpItem {
-    type: MarkRaw
-    title: string
-    config: TriggerHttp
-  }
-
   interface TriggerTimer {
     triggerName: string
     triggerType: string
@@ -26,10 +20,10 @@ declare global {
       payload: string
     }
   }
-  interface TriggerTimerItem {
+  interface TriggerItem {
     type: MarkRaw
     title: string
-    config: TriggerTimer
+    config: TriggerHttp | TriggerTimer
   }
 }
 

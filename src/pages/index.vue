@@ -3,7 +3,7 @@ import { codeToHtml } from 'shiki'
 import { parse, stringify } from 'yaml'
 
 const triggerRef = ref()
-const activeNames = ref(['network'])
+const activeNames = ref(['oss'])
 // const router = useRouter()
 const basic = reactive<Basic>(defaultBasic)
 const runtime = ref<Runtime>(defaultRuntime)
@@ -20,13 +20,12 @@ const runtimeConfig = computed(() => {
       return { ...baseRuntime, handler: runtime.value.handler } // 默认内置运行时
   }
 })
-const triggers = reactive<TriggerHttpItem[] | TriggerTimerItem[]>([])
+const triggers = reactive<TriggerItem[]>([])
 const environmentVariables = reactive<KeyValue[]>([])
 const layers = reactive([])
 const result = ref({})
 const htmlresult = ref('')
 const log = ref<Log>(defaultLog)
-const network = ref<Network>(defaultNetwork)
 const logConfig = computed(() => {
   if (log.value.auto)
     return 'auto'
@@ -36,7 +35,7 @@ const logConfig = computed(() => {
     logBeginRule: logBeginRule ? 'DefaultRegex' : 'None',
   }
 })
-
+const network = ref<Network>(defaultNetwork)
 const networkConfig = computed(() => {
   if (network.value.auto)
     return 'auto'
@@ -46,9 +45,34 @@ const networkConfig = computed(() => {
     vSwitchIds: vSwitchIds.filter(Boolean),
   }
 })
-
+const nas = ref<Nas>(defaultNas)
+const nasConfig = computed(() => {
+  if (nas.value.auto)
+    return 'auto'
+  const { auto, enable, ...nasProps } = nas.value
+  nasProps.mountPoints = nasProps.mountPoints.map(item => ({
+    enableTLS: item.enableTLS,
+    serverAddr: `${item.serverAddr}:${item.localDir}`,
+    mountDir: item.mountDir,
+  }))
+  return nasProps
+})
+const oss = ref<Oss>(defaultOss)
+const ossConfig = computed(() => {
+  const { enable, mountPoints, ...ossProps } = oss.value
+  return {
+    ...ossProps,
+    mountPoints: mountPoints.map(item => ({
+      bucketName: item.bucketName,
+      endpoint: `http://oss-${item.region}-internal.aliyuncs.com`,
+      bucketPath: item.bucketPath,
+      mountDir: item.mountDir,
+      readOnly: item.readOnly,
+    })),
+  }
+})
 async function generate() {
-  const { functionType, ...basicProps } = basic
+  const { functionType, role, ...basicProps } = basic
   result.value = {
     edition: '3.0.0',
     name: basic.functionName,
@@ -58,7 +82,7 @@ async function generate() {
         component: 'fc3',
         props: {
           ...basicProps,
-          role: 'acs:ram::1609080090370438:role/aliyunfcserverlessdevsrole',
+          role,
           triggers: triggers.map(item => item.config),
           environmentVariables: Object.fromEntries(environmentVariables.filter(v => v.key && v.value).map(v => [v.key, v.value])),
           layers: layers.filter(Boolean),
@@ -66,6 +90,8 @@ async function generate() {
           ...(log.value.enable ? { logConfig: logConfig.value } : {}),
           ...(network.value.enable ? { networkConfig: networkConfig.value } : {}),
           internetAccess: !!network.value.internetAccess,
+          ...(nas.value.enable && nas.value.mountPoints.length ? { nasConfig: nasConfig.value } : {}),
+          ...(oss.value.enable && oss.value.mountPoints.length ? { ossConfig: ossConfig.value } : {}),
         },
       },
     },
@@ -113,6 +139,12 @@ onMounted(async () => {
           </el-collapse-item>
           <el-collapse-item title="网络" name="network">
             <Network v-model="network" />
+          </el-collapse-item>
+          <el-collapse-item title="NAS" name="nas">
+            <Nas v-model="nas" />
+          </el-collapse-item>
+          <el-collapse-item title="OSS" name="oss">
+            <Oss v-model="oss" />
           </el-collapse-item>
         </el-collapse>
       </div>

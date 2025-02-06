@@ -248,6 +248,7 @@ export const defaultBasic = {
   memory: 128,
   disk: 512,
   description: '',
+  role: '',
 }
 // 默认网络
 export const defaultNetwork = {
@@ -257,4 +258,18 @@ export const defaultNetwork = {
   securityGroupId: '',
   vpcId: '',
   vSwitchIds: [],
+}
+// 默认NAS
+export const defaultNas = {
+  enable: true,
+  auto: true,
+  groupId: 0,
+  userId: 0,
+  mountPoints: [],
+}
+
+// 默认OSS
+export const defaultOss = {
+  enable: true,
+  mountPoints: [],
 }
