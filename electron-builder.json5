@@ -1,0 +1,36 @@
+/**
+ * @see https://www.electron.build/configuration/configuration
+ */
+{
+  "appId": "tank",
+  "productName": "赶集",
+  "asar": true,
+  "icon": "public/icon.ico",
+  "directories": {
+    "output": "release/"
+  },
+  "files": [
+    "dist-electron",
+    "dist"
+  ],
+  "win": {
+  "requestedExecutionLevel": "highestAvailable",
+  "target": [
+    {
+      "target": "nsis",
+      "arch": [
+        "x64"
+      ]
+    }
+  ],
+  "artifactName": "wts_${version}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": true,
+    "createDesktopShortcut":true,
+    "createStartMenuShortcut":true
+  }
+}

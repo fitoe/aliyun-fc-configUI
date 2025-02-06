@@ -1,0 +1,14 @@
+.DS_Store
+.vite-ssg-dist
+.vite-ssg-temp
+*.local
+dist
+node_modules
+.idea/
+*.log
+cypress/downloads
+auto-imports.d.ts
+components.d.ts
+typed-router.d.ts
+*.timestamp*
+release/

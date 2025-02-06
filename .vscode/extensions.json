@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "antfu.iconify",
+    "antfu.unocss",
+    "antfu.goto-alias",
+    "dbaeumer.vscode-eslint",
+    "vue.volar",
+    "dbaeumer.vscode-eslint",
+    "maggie.eslint-rules-zh-plugin",
+    "ecmel.vscode-html-css",
+    "antfu.iconify"
+  ]
+}

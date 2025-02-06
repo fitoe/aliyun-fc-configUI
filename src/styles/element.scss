@@ -1,0 +1,5 @@
+.el-table {
+  .el-table__inner-wrapper::before {
+    height: 0 !important;
+  }
+}
