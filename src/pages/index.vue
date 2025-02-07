@@ -56,7 +56,7 @@ async function generate() {
           layers: layers.filter(Boolean),
           ...runtimeRef.value?.runtimeConfig,
           ...(log.value.enable ? { logConfig: logRef.value?.logConfig } : {}),
-          ...(network.value.enable ? { networkConfig: networkRef.value?.networkConfig } : {}),
+          ...(network.value.enable ? { vpcConfig: networkRef.value?.networkConfig } : {}),
           internetAccess: !!network.value.internetAccess,
           ...(nas.value.enable && nas.value.mountPoints.length ? { nasConfig: nasRef.value?.nasConfig } : {}),
           ...(oss.value.enable && oss.value.mountPoints.length ? { ossConfig: ossRef.value?.ossConfig } : {}),

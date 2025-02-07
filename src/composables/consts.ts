@@ -133,19 +133,19 @@ export const runtimes = [
         label: 'Linux',
         value: 'linux',
         children: [
-          { label: 'Debian 11', value: 'debian11' },
-          { label: 'Debian 10', value: 'debian10' },
-          { label: 'Debian 9', value: 'debian9' },
+          { label: 'Debian 11', value: 'custom.debian11' },
+          { label: 'Debian 10', value: 'custom.debian10' },
+          { label: 'Debian 9', value: 'custom.debian9' },
         ],
       },
       {
         label: 'Nodejs',
         value: 'nodejs',
         children: [
-          { label: 'node.js 20 Debian10', value: 'nodejs20' },
-          { label: 'node.js 18 Debian10', value: 'nodejs18' },
-          { label: 'node.js 17 Debian10', value: 'nodejs17' },
-          { label: 'node.js 16 Debian9', value: 'nodejs16' },
+          { label: 'node.js 20 Debian10', value: 'custom.nodejs20' },
+          { label: 'node.js 18 Debian10', value: 'custom.nodejs18' },
+          { label: 'node.js 17 Debian10', value: 'custom.nodejs17' },
+          { label: 'node.js 16 Debian9', value: 'custom.nodejs16' },
 
         ],
       },
@@ -153,10 +153,10 @@ export const runtimes = [
         label: 'Java',
         value: 'java',
         children: [
-          { label: 'java 21 Debian10', value: 'java.21' },
-          { label: 'java 17 Debian10', value: 'java.17' },
-          { label: 'java 11 Debian10', value: 'java.11' },
-          { label: 'java 8 Debian9', value: 'java8' },
+          { label: 'java 21 Debian10', value: 'custom.java.21' },
+          { label: 'java 17 Debian10', value: 'custom.java.17' },
+          { label: 'java 11 Debian10', value: 'custom.java.11' },
+          { label: 'java 8 Debian9', value: 'custom.java8' },
         ],
 
       },
@@ -164,12 +164,12 @@ export const runtimes = [
         label: 'Python',
         value: 'python',
         children: [
-          { label: 'python 3.10 Debian10', value: 'python3.10' },
-          { label: 'python 3.9 Debian10', value: 'python3.9' },
-          { label: 'python 3.8 Debian10', value: 'python3.8' },
-          { label: 'python 3.8 Debian9', value: 'python3.8' },
-          { label: 'python 3.7 Debian9', value: 'python3.7' },
-          { label: 'python 3.6 Debian9', value: 'python3.6' },
+          { label: 'python 3.10 Debian10', value: 'custom.python3.10' },
+          { label: 'python 3.9 Debian10', value: 'custom.python3.9' },
+          { label: 'python 3.8 Debian10', value: 'custom.python3.8' },
+          { label: 'python 3.8 Debian9', value: 'custom.python3.8' },
+          { label: 'python 3.7 Debian9', value: 'custom.python3.7' },
+          { label: 'python 3.6 Debian9', value: 'custom.python3.6' },
 
         ],
       },
@@ -177,10 +177,10 @@ export const runtimes = [
         label: 'PHP',
         value: 'php',
         children: [
-          { label: 'php 8.1 Debian10', value: 'php8.1' },
-          { label: 'php 8.0 Debian10', value: 'php8.0' },
-          { label: 'php 8.1 Debian9', value: 'php8.1' },
-          { label: 'php 7.4 Debian9', value: 'php7.4' },
+          { label: 'php 8.1 Debian10', value: 'custom.php8.1' },
+          { label: 'php 8.0 Debian10', value: 'custom.php8.0' },
+          { label: 'php 8.1 Debian9', value: 'custom.php8.1' },
+          { label: 'php 7.4 Debian9', value: 'custom.php7.4' },
         ],
 
       },
@@ -188,7 +188,7 @@ export const runtimes = [
         label: 'Golang',
         value: 'go',
         children: [
-          { label: 'Go 1 Debian10', value: 'go1' },
+          { label: 'Go 1 Debian10', value: 'custom.go1' },
         ],
 
       },
@@ -196,7 +196,7 @@ export const runtimes = [
         label: '.NET',
         value: 'dotnet',
         children: [
-          { label: '.NET 6.0 Debian10', value: 'dotnet6.0' },
+          { label: '.NET 6.0 Debian10', value: 'custom.dotnet6.0' },
         ],
       },
     ],

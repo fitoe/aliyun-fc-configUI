@@ -1,7 +1,6 @@
 <script setup lang='ts'>
 import TriggerHttp from '@/components/trigger/http.vue'
 import TriggerTimer from '@/components/trigger/timer.vue'
-import { markRaw } from 'vue'
 import { parse } from 'yaml'
 
 const emit = defineEmits(['loaded'])
@@ -28,12 +27,28 @@ async function loadfile() {
   }
 }
 
+function findRuntimePath(targetRuntime: string) {
+  for (const level1 of runtimes) {
+    for (const level2 of level1.children || []) {
+      for (const level3 of level2.children || []) {
+        if (level3.value === targetRuntime) {
+          return [level1.value, level2.value, level3.value]
+        }
+      }
+    }
+  }
+  return ['custom', 'container', targetRuntime]
+}
+
 function adaptor(data: any) {
-  const props = data.resources.fcDemo.props
+  const resourceName = Object.keys(data.resources)[0]
+  const props = data.resources[resourceName].props
+  console.log(props)
+
   return {
     basic: {
       functionName: data.name,
-      functionType: props.handler ? 'event' : 'web',
+      functionType: props.customRuntimeConfig ? 'web' : 'event',
       description: props.description,
       role: props.role,
       region: props.region,
@@ -42,13 +57,13 @@ function adaptor(data: any) {
       diskSize: props.diskSize,
     },
     runtime: {
-      runtime: ['custom', 'container', props.runtime],
-      timeout: props.timeout,
+      runtime: findRuntimePath(props.runtime),
+      timeout: props?.timeout,
       code: props.code,
       handler: props.handler,
-      command: props.command?.join(' ') || '',
-      port: props.port || 9000,
-      instanceConcurrency: props.instanceConcurrency || 1,
+      command: props.customRuntimeConfig?.command?.join(' ') || '',
+      port: props.customRuntimeConfig?.port || 9000,
+      instanceConcurrency: props.customRuntimeConfig?.instanceConcurrency || 1,
     },
     triggers: props.triggers?.map((t: any) => {
       const config = {
@@ -126,9 +141,10 @@ function adaptor(data: any) {
         : {}),
     },
     oss: {
-      enable: !!props.ossConfig,
-      mountPoints: props.ossConfig?.mountPoints?.map((m: any) => {
-        const region = m.endpoint.match(/oss-([^-]+)-internal/)?.[1] || ''
+      enable: !!props.ossMountConfig,
+      mountPoints: props.ossMountConfig?.mountPoints?.map((m: any) => {
+        const region = m.endpoint.match(/oss-([\w-]+)-internal/)?.[1] || ''
+
         return {
           region,
           bucketName: m.bucketName,
