@@ -97,14 +97,6 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
     },
 
-    ssgOptions: {
-      script: 'async',
-      formatting: 'minify',
-      crittersOptions: {
-        reduceInlineStyles: false,
-      },
-    },
-
     ssr: {
       noExternal: ['workbox-window', /vue-i18n/],
     },
