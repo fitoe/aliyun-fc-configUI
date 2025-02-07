@@ -1,10 +1,14 @@
 import path from 'node:path'
+import Shiki from '@shikijs/markdown-it'
 import Vue from '@vitejs/plugin-vue'
+import LinkAttributes from 'markdown-it-link-attributes'
+import TaskList from 'markdown-it-task-lists'
 import Unocss from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
+import Markdown from 'unplugin-vue-markdown/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig, loadEnv } from 'vite'
@@ -37,7 +41,9 @@ export default defineConfig(({ mode }) => {
     },
 
     plugins: [
-      Vue(),
+      Vue({
+        include: [/\.vue$/, /\.md$/],
+      }),
       ElementPlus({
         useSource: false,
         defaultLocale: 'zh-cn',
@@ -90,6 +96,32 @@ export default defineConfig(({ mode }) => {
             },
           },
         ],
+      }),
+      Markdown({
+        wrapperClasses: 'prose prose-sm container m-auto text-left',
+        headEnabled: true,
+        markdownItOptions: {
+          html: true,
+          linkify: true,
+          typographer: true,
+        },
+        async markdownItSetup(md) {
+          md.use(TaskList, { label: true, labelAfter: true })
+          md.use(LinkAttributes, {
+            matcher: (link: string) => /^https?:\/\//.test(link),
+            attrs: {
+              target: '_blank',
+              rel: 'noopener',
+            },
+          })
+          md.use(await Shiki({
+            defaultColor: false,
+            themes: {
+              light: 'vitesse-light',
+              dark: 'vitesse-dark',
+            },
+          }))
+        },
       }),
     ],
 

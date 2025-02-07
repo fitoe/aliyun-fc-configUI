@@ -26,11 +26,11 @@ export default defineConfig({
     presetIcons({
       scale: 1.2,
     }),
-
     presetTypography(),
   ],
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),
   ],
+  safelist: 'prose'.split(' '),
 })

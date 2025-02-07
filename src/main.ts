@@ -8,11 +8,11 @@ import { routes } from 'vue-router/auto-routes'
 import App from './App.vue'
 import 'element-plus/es/hooks/use-locale/index'
 
+import 'uno.css'
 import '@unocss/reset/tailwind.css'
 import './styles/main.css'
 import './styles/markdown.css'
 import './styles/element.scss'
-import 'uno.css'
 
 export const createApp = ViteSSG(
   App,

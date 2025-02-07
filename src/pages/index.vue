@@ -3,7 +3,7 @@ import { createHighlighter } from 'shiki'
 import { parse, stringify } from 'yaml'
 
 const triggerRef = ref()
-const activeNames = ref(['oss'])
+const activeNames = ref([])
 // const router = useRouter()
 const basic = reactive<Basic>(defaultBasic)
 const runtime = ref<Runtime>(defaultRuntime)
@@ -120,8 +120,9 @@ onMounted(async () => {
 
 <template>
   <div class="pt-10">
-    <div class="grid grid-cols-3 container gap-10">
+    <div class="grid grid-cols-3 gap-10">
       <div class="col-span-1">
+        <!-- <Loadconfig /> -->
         <el-collapse v-model="activeNames">
           <el-collapse-item title="基础配置" name="basic">
             <Basic v-model="basic" />

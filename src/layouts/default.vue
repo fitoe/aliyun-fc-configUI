@@ -8,7 +8,7 @@ useHead({
 <template>
   <div class="">
     <LayoutHeader />
-    <main>
+    <main class="container">
       <router-view v-slot="{ Component }">
         <keep-alive :exclude="[]">
           <component :is="Component" />
