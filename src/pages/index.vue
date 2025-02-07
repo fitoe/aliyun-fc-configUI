@@ -120,7 +120,21 @@ function handleLoad(data: any) {
   log.value = data.log
 
   // 更新网络配置
-  network.value = data.network
+  if (data.network) {
+    // 先设置基本状态
+    console.log(data.network)
+
+    network.value.enable = data.network.enable
+    network.value.auto = data.network.auto
+    network.value.internetAccess = data.network.internetAccess
+
+    // 如果不是auto模式且启用了网络配置，则设置详细配置
+    if (!data.network.auto && data.network.enable) {
+      network.value.securityGroupId = data.network.securityGroupId || ''
+      network.value.vpcId = data.network.vpcId || ''
+      network.value.vSwitchIds = data.network.vSwitchIds || []
+    }
+  }
 
   // 更新 NAS 配置
   nas.value = data.nas

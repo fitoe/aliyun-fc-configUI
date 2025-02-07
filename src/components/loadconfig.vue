@@ -95,13 +95,13 @@ function adaptor(data: any) {
         : {}),
     },
     network: {
-      enable: !!props.networkConfig,
-      auto: props.networkConfig === 'auto',
-      ...(typeof props.networkConfig === 'object'
+      enable: !!props.vpcConfig,
+      auto: props.vpcConfig === 'auto',
+      ...(typeof props.vpcConfig === 'object'
         ? {
-          securityGroupId: props.networkConfig.securityGroupId,
-          vpcId: props.networkConfig.vpcId,
-          vSwitchIds: props.networkConfig.vSwitchIds || [],
+          securityGroupId: props.vpcConfig.securityGroupId,
+          vpcId: props.vpcConfig.vpcId,
+          vSwitchIds: props.vpcConfig.vSwitchIds || [],
         }
         : {}),
       internetAccess: props.internetAccess,
