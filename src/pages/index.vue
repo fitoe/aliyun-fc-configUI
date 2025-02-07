@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { codeToHtml } from 'shiki'
+import { createHighlighter } from 'shiki'
 import { parse, stringify } from 'yaml'
 
 const triggerRef = ref()
@@ -96,7 +96,11 @@ async function generate() {
       },
     },
   }
-  const html = await codeToHtml(stringify(result.value), {
+  const highlighter = await createHighlighter({
+    themes: ['dark-plus'],
+    langs: ['yaml'],
+  })
+  const html = highlighter.codeToHtml(stringify(result.value), {
     lang: 'yaml',
     theme: 'dark-plus',
   })

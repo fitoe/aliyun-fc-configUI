@@ -12,3 +12,4 @@ components.d.ts
 typed-router.d.ts
 *.timestamp*
 release/
+pnpm-lock.yaml
