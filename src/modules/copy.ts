@@ -7,7 +7,6 @@ export const vCopy: Directive = {
     el.style.cursor = 'pointer'
     el.addEventListener('click', () => {
       const text = binding.value
-      console.log(text, 'text')
 
       if (!text)
         return

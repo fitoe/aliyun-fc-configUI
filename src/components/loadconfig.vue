@@ -43,7 +43,6 @@ function findRuntimePath(targetRuntime: string) {
 function adaptor(data: any) {
   const resourceName = Object.keys(data.resources)[0]
   const props = data.resources[resourceName].props
-  console.log(props)
 
   return {
     basic: {

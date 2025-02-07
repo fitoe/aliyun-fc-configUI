@@ -122,7 +122,6 @@ function handleLoad(data: any) {
   // 更新网络配置
   if (data.network) {
     // 先设置基本状态
-    console.log(data.network)
 
     network.value.enable = data.network.enable
     network.value.auto = data.network.auto
