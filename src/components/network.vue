@@ -1,16 +1,37 @@
 <script setup lang='ts'>
+import { computed } from 'vue'
+
 const model = defineModel<Network>({
   default: defaultNetwork,
 })
+
+// 添加计算属性
+const networkConfig = computed(() => {
+  if (model.value.auto)
+    return 'auto'
+  const { auto, enable, vSwitchIds, internetAccess, ...networkProps } = model.value
+  return {
+    ...networkProps,
+    vSwitchIds: vSwitchIds.filter(Boolean),
+  }
+})
+
+// 向父组件暴露networkConfig
+defineExpose({
+  networkConfig,
+})
+
 const rules = {
   enable: [{ required: true, message: '请选择启用', trigger: 'blur' }],
   securityGroupId: [{ required: true, message: '请输入安全组ID', trigger: 'blur' }],
   vpcId: [{ required: true, message: '请输入VPC ID', trigger: 'blur' }],
   vSwitchIds: [{ required: true, message: '请输入VSwitch ID', trigger: 'blur' }],
 }
+
 function addVSwitch() {
   model.value.vSwitchIds.push('')
 }
+
 function deleteVSwitch(index: number) {
   model.value.vSwitchIds.splice(index, 1)
 }

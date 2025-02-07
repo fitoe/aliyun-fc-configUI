@@ -1,16 +1,36 @@
 <script setup lang='ts'>
+interface TriggerHttp {
+  triggerName: string
+  triggerType: 'http'
+  qualifier: string
+  description: string
+  triggerConfig: {
+    methods: string[]
+    authType: 'anonymous' | 'function'
+    disableURLInternet: boolean
+  }
+}
+
 const model = defineModel<TriggerHttp>({
   default: {
     triggerName: '',
-    triggerType: '',
-    qualifier: '',
+    triggerType: 'http',
+    qualifier: 'LATEST',
+    description: '',
     triggerConfig: {
-      methods: [],
-      authType: '',
+      methods: ['GET', 'POST'],
+      authType: 'anonymous',
       disableURLInternet: false,
     },
   },
 })
+
+const methodsList = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'PATCH']
+const authList = [
+  { label: '匿名访问', value: 'anonymous' },
+  { label: '函数计算', value: 'function' },
+]
+
 const rules = {
   'triggerName': [{ required: true, message: '请输入名称', trigger: 'blur' }],
   'qualifier': [{ required: true, message: '请输入版本', trigger: 'blur' }],

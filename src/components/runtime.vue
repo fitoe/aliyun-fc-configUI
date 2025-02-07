@@ -1,15 +1,45 @@
 <script setup lang='ts'>
+import { computed } from 'vue'
+
 const props = defineProps<{
   basic: Basic
 }>()
+
 const model = defineModel<Runtime>({
   default: defaultRuntime,
 })
+
+// 添加计算属性
+const runtimeConfig = computed(() => {
+  const baseRuntime = {
+    runtime: model.value.runtime[2],
+    timeout: model.value.timeout,
+    code: model.value.code,
+  }
+  switch (props.basic.functionType) {
+    case 'web':
+      return {
+        ...baseRuntime,
+        port: model.value.port,
+        command: model.value.command.split(' ').filter(Boolean),
+        instanceConcurrency: model.value.instanceConcurrency,
+      }
+    default:
+      return { ...baseRuntime, handler: model.value.handler } // 默认内置运行时
+  }
+})
+
+// 向父组件暴露runtimeConfig
+defineExpose({
+  runtimeConfig,
+})
+
 watch(() => props.basic.functionType, (n) => {
   if (n === 'event') {
     model.value.instanceConcurrency = 1 // 内置运行时只能设置为1
   }
 }, { immediate: true, deep: true })
+
 const rules = reactive({
   runtime: [{ required: true, message: '请选择运行环境', trigger: 'change' }],
   command: [{ required: true, message: '请输入启动命令', trigger: 'blur' }],

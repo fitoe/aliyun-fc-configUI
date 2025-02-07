@@ -1,11 +1,35 @@
 <script setup lang='ts'>
+import { computed } from 'vue'
+
 const model = defineModel<Oss>({
   default: defaultOss,
 })
+
+// 添加计算属性
+const ossConfig = computed(() => {
+  const { enable, mountPoints, ...ossProps } = model.value
+  return {
+    ...ossProps,
+    mountPoints: mountPoints.map(item => ({
+      bucketName: item.bucketName,
+      endpoint: `http://oss-${item.region}-internal.aliyuncs.com`,
+      bucketPath: item.bucketPath,
+      mountDir: item.mountDir,
+      readOnly: item.readOnly,
+    })),
+  }
+})
+
+// 向父组件暴露ossConfig
+defineExpose({
+  ossConfig,
+})
+
 const rules = {
   enable: [{ required: true, message: '请选择启用', trigger: 'blur' }],
   mountPoints: [{ required: true, message: '请添加挂载点', trigger: 'blur' }],
 }
+
 function addMountPoint() {
   model.value.mountPoints.push({
     region: '',
@@ -15,6 +39,7 @@ function addMountPoint() {
     readOnly: false,
   })
 }
+
 function deleteMountPoint(index: number) {
   model.value.mountPoints.splice(index, 1)
 }

@@ -1,11 +1,33 @@
 <script setup lang='ts'>
+import { computed } from 'vue'
+
 const model = defineModel<Nas>({
   default: defaultNas,
 })
+
+// 添加计算属性
+const nasConfig = computed(() => {
+  if (model.value.auto)
+    return 'auto'
+  const { auto, enable, ...nasProps } = model.value
+  nasProps.mountPoints = nasProps.mountPoints.map(item => ({
+    enableTLS: item.enableTLS,
+    serverAddr: `${item.serverAddr}:${item.localDir}`,
+    mountDir: item.mountDir,
+  }))
+  return nasProps
+})
+
+// 向父组件暴露nasConfig
+defineExpose({
+  nasConfig,
+})
+
 const rules = {
   enable: [{ required: true, message: '请选择启用', trigger: 'blur' }],
   mountPoints: [{ required: true, message: '请添加挂载点', trigger: 'blur' }],
 }
+
 function addMountPoint() {
   model.value.mountPoints.push({
     enableTLS: false,
@@ -14,6 +36,7 @@ function addMountPoint() {
     localDir: '',
   })
 }
+
 function deleteMountPoint(index: number) {
   model.value.mountPoints.splice(index, 1)
 }

@@ -4,7 +4,8 @@ const model = defineModel<TriggerTimer>({
   default: {
     triggerName: '',
     triggerType: 'timer',
-    qualifier: '',
+    qualifier: 'LATEST',
+    description: '',
     triggerConfig: {
       enable: true,
       cronExpression: '@every 4m',
@@ -43,3 +44,15 @@ const typeList = [{ label: '时间间隔', value: 'every' }, { label: '指定时
     </el-form>
   </div>
 </template>
+
+interface TriggerTimer {
+triggerName: string
+triggerType: 'timer'
+qualifier: string
+description: string
+triggerConfig: {
+enable: boolean
+cronExpression: string
+payload: string
+}
+}

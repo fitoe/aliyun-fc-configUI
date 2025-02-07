@@ -1,7 +1,26 @@
 <script setup lang='ts'>
+import { computed } from 'vue'
+
 const model = defineModel<Log>({
   default: defaultLog,
 })
+
+// 添加计算属性和watch
+const logConfig = computed(() => {
+  if (model.value.auto)
+    return 'auto'
+  const { auto, enable, logBeginRule, ...logs } = model.value
+  return {
+    ...logs,
+    logBeginRule: logBeginRule ? 'DefaultRegex' : 'None',
+  }
+})
+
+// 向父组件暴露logConfig
+defineExpose({
+  logConfig,
+})
+
 const rules = {
   enable: [{ required: true, message: '请选择启用', trigger: 'blur' }],
   project: [{ required: true, message: '请输入日志项目', trigger: 'blur' }],

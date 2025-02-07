@@ -4,73 +4,34 @@ import { parse, stringify } from 'yaml'
 
 const triggerRef = ref()
 const activeNames = ref([])
-// const router = useRouter()
+
+// 各模块
 const basic = reactive<Basic>(defaultBasic)
+
 const runtime = ref<Runtime>(defaultRuntime)
-const runtimeConfig = computed(() => {
-  const baseRuntime = {
-    runtime: runtime.value.runtime[2],
-    timeout: runtime.value.timeout,
-    code: runtime.value.code,
-  }
-  switch (basic.functionType) {
-    case 'web':
-      return { ...baseRuntime, port: runtime.value.port, command: runtime.value.command.split(' ').filter(Boolean), instanceConcurrency: runtime.value.instanceConcurrency }
-    default:
-      return { ...baseRuntime, handler: runtime.value.handler } // 默认内置运行时
-  }
-})
+const runtimeRef = ref()
+
 const triggers = reactive<TriggerItem[]>([])
+
 const environmentVariables = reactive<KeyValue[]>([])
+
 const layers = reactive([])
+
+const log = ref<Log>(defaultLog)
+const logRef = ref()
+
+const network = ref<Network>(defaultNetwork)
+const networkRef = ref()
+
+const nas = ref<Nas>(defaultNas)
+const nasRef = ref()
+
+const oss = ref<Oss>(defaultOss)
+const ossRef = ref()
+
+// 代码高亮
 const result = ref({})
 const htmlresult = ref('')
-const log = ref<Log>(defaultLog)
-const logConfig = computed(() => {
-  if (log.value.auto)
-    return 'auto'
-  const { auto, enable, logBeginRule, ...logs } = log.value
-  return {
-    ...logs,
-    logBeginRule: logBeginRule ? 'DefaultRegex' : 'None',
-  }
-})
-const network = ref<Network>(defaultNetwork)
-const networkConfig = computed(() => {
-  if (network.value.auto)
-    return 'auto'
-  const { auto, enable, vSwitchIds, internetAccess, ...networkProps } = network.value
-  return {
-    ...networkProps,
-    vSwitchIds: vSwitchIds.filter(Boolean),
-  }
-})
-const nas = ref<Nas>(defaultNas)
-const nasConfig = computed(() => {
-  if (nas.value.auto)
-    return 'auto'
-  const { auto, enable, ...nasProps } = nas.value
-  nasProps.mountPoints = nasProps.mountPoints.map(item => ({
-    enableTLS: item.enableTLS,
-    serverAddr: `${item.serverAddr}:${item.localDir}`,
-    mountDir: item.mountDir,
-  }))
-  return nasProps
-})
-const oss = ref<Oss>(defaultOss)
-const ossConfig = computed(() => {
-  const { enable, mountPoints, ...ossProps } = oss.value
-  return {
-    ...ossProps,
-    mountPoints: mountPoints.map(item => ({
-      bucketName: item.bucketName,
-      endpoint: `http://oss-${item.region}-internal.aliyuncs.com`,
-      bucketPath: item.bucketPath,
-      mountDir: item.mountDir,
-      readOnly: item.readOnly,
-    })),
-  }
-})
 const highlight = ref()
 async function initHighlighter() {
   highlight.value = await createHighlighter({
@@ -93,12 +54,12 @@ async function generate() {
           triggers: triggers.map(item => item.config),
           environmentVariables: Object.fromEntries(environmentVariables.filter(v => v.key && v.value).map(v => [v.key, v.value])),
           layers: layers.filter(Boolean),
-          ...runtimeConfig.value,
-          ...(log.value.enable ? { logConfig: logConfig.value } : {}),
-          ...(network.value.enable ? { networkConfig: networkConfig.value } : {}),
+          ...runtimeRef.value?.runtimeConfig,
+          ...(log.value.enable ? { logConfig: logRef.value?.logConfig } : {}),
+          ...(network.value.enable ? { networkConfig: networkRef.value?.networkConfig } : {}),
           internetAccess: !!network.value.internetAccess,
-          ...(nas.value.enable && nas.value.mountPoints.length ? { nasConfig: nasConfig.value } : {}),
-          ...(oss.value.enable && oss.value.mountPoints.length ? { ossConfig: ossConfig.value } : {}),
+          ...(nas.value.enable && nas.value.mountPoints.length ? { nasConfig: nasRef.value?.nasConfig } : {}),
+          ...(oss.value.enable && oss.value.mountPoints.length ? { ossConfig: ossRef.value?.ossConfig } : {}),
         },
       },
     },
@@ -121,13 +82,62 @@ onMounted(async () => {
   triggerRef.value?.addTrigger('http')
   generate()
 })
+// load yaml配置
+function handleLoad(data: any) {
+  // 更新基础配置
+  Object.assign(basic, data.basic)
+
+  // 更新运行时配置
+  runtime.value = data.runtime
+
+  // 更新触发器
+  triggers.length = 0
+
+  // 添加新的触发器
+  data.triggers.forEach((trigger: any) => {
+    if (trigger.config.triggerType === 'http') {
+      triggerRef.value?.addTrigger('http')
+    }
+    else if (trigger.config.triggerType === 'timer') {
+      triggerRef.value?.addTrigger('timer')
+    }
+
+    const lastIndex = triggers.length - 1
+    if (lastIndex >= 0) {
+      Object.assign(triggers[lastIndex].config, trigger.config)
+    }
+  })
+
+  // 更新环境变量
+  environmentVariables.length = 0
+  environmentVariables.push(...data.environmentVariables)
+
+  // 更新层配置
+  layers.length = 0
+  layers.push(...data.layers)
+
+  // 更新日志配置
+  log.value = data.log
+
+  // 更新网络配置
+  network.value = data.network
+
+  // 更新 NAS 配置
+  nas.value = data.nas
+
+  // 更新 OSS 配置
+  oss.value = data.oss
+
+  // 重新生成配置
+  generate()
+}
 </script>
 
 <template>
   <div class="pt-10">
     <div class="grid grid-cols-3 gap-10">
       <div class="col-span-1">
-        <!-- <Loadconfig /> -->
+        <Loadconfig @loaded="handleLoad" />
         <el-collapse v-model="activeNames">
           <el-collapse-item title="基础配置" name="basic">
             <Basic v-model="basic" />
@@ -136,7 +146,7 @@ onMounted(async () => {
             <Trigger ref="triggerRef" v-model="triggers" />
           </el-collapse-item>
           <el-collapse-item title="运行时" name="runtime">
-            <Runtime v-model="runtime" :basic="basic" />
+            <Runtime ref="runtimeRef" v-model="runtime" :basic="basic" />
           </el-collapse-item>
           <el-collapse-item title="环境变量" name="env">
             <Env v-model="environmentVariables" />
@@ -145,16 +155,16 @@ onMounted(async () => {
             <Layer v-model="layers" />
           </el-collapse-item>
           <el-collapse-item title="日志" name="log">
-            <Log v-model="log" />
+            <Log ref="logRef" v-model="log" />
           </el-collapse-item>
           <el-collapse-item title="网络" name="network">
-            <Network v-model="network" />
+            <Network ref="networkRef" v-model="network" />
           </el-collapse-item>
           <el-collapse-item title="NAS" name="nas">
-            <Nas v-model="nas" />
+            <Nas ref="nasRef" v-model="nas" />
           </el-collapse-item>
           <el-collapse-item title="OSS" name="oss">
-            <Oss v-model="oss" />
+            <Oss ref="ossRef" v-model="oss" />
           </el-collapse-item>
         </el-collapse>
       </div>
