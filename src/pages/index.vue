@@ -71,6 +71,13 @@ const ossConfig = computed(() => {
     })),
   }
 })
+const highlight = ref()
+async function initHighlighter() {
+  highlight.value = await createHighlighter({
+    themes: ['dark-plus'],
+    langs: ['yaml'],
+  })
+}
 async function generate() {
   const { functionType, role, ...basicProps } = basic
   result.value = {
@@ -96,11 +103,8 @@ async function generate() {
       },
     },
   }
-  const highlighter = await createHighlighter({
-    themes: ['dark-plus'],
-    langs: ['yaml'],
-  })
-  const html = highlighter.codeToHtml(stringify(result.value), {
+
+  const html = highlight.value.codeToHtml(stringify(result.value), {
     lang: 'yaml',
     theme: 'dark-plus',
   })
@@ -113,6 +117,7 @@ watchDebounced(
 )
 onMounted(async () => {
   await nextTick()
+  await initHighlighter()
   triggerRef.value?.addTrigger('http')
   generate()
 })
@@ -154,7 +159,7 @@ onMounted(async () => {
         </el-collapse>
       </div>
       <div class="col-span-2">
-        <div class="sticky top-3 p-3" v-html="htmlresult" />
+        <div class="" v-html="htmlresult" />
       </div>
     </div>
   </div>
